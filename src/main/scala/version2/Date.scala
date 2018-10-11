@@ -1,5 +1,7 @@
 package version2
 
+import scala.util.{Failure, Success, Try}
+
 // Compaion object
 object Date {
   def apply(day:Int, month:Int, year:Int=2018):Date = {
@@ -49,6 +51,12 @@ class Date private (val day:Int=1, val month:Int=1, val year:Int=2018) {
 }
 
 object TryDate {
+  // pass by name
+  def useADate(d: => Date): Unit = {
+    println("I got a date")
+//    println(s"s$d")
+  }
+
   def main(args: Array[String]): Unit = {
     val d1 = Date.apply(1, 1, 2000)
     val d2 = Date(1, 1, 2000)
@@ -71,5 +79,17 @@ object TryDate {
 //    x match {
 //      case 99 => println("hah, I thought so!")
 //    }
+
+    Try(Date(-1, -2, -3)) match {
+      case Success(d) => println(s"the date is $d")
+      case Failure(ex) => println(s"Problem was ${ex.getMessage}")
+    }
+    println("still going")
+    Try(Date(1, 2, 2013)) match {
+      case Success(d) => println(s"the date is $d")
+      case Failure(ex) => println(s"Problem was ${ex.getMessage}")
+    }
+    println("still going")
+    useADate(Date(-1, -2, -3))
   }
 }
