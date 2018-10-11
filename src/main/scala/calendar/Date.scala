@@ -31,7 +31,10 @@ object Date {
 }
 
 // constructor args can be simple args, val, or var
-class Date(val day:Int=1, val month:Int=1, val year:Int=2018) {
+class Date(/*private [this] */
+           val day:Int=1, val month:Int=1, val year:Int=2018) {
+  def this(x:Int) = this(x, 1, 2018)
+
   def dayOfWeek: Int = {
 //    val m = if (month < 3) month + 12 else month
 //    val y = if (month < 3) year - 1 else year
@@ -49,13 +52,23 @@ class Date(val day:Int=1, val month:Int=1, val year:Int=2018) {
     Date.dayName(dayOfWeek)
 
   override def toString: String = s"day: $day, month: $month, year: $year"
+
+  final override def equals(obj: Any): Boolean = {
+    println("in Date.equals method")
+    obj match {
+      case d:Date => d.day == this.day &&
+        d.month == this.month &&
+        d.year == this.year
+      case _ => false
+    }
+  }
 }
 
 object TryDate {
   // function args are VAL always!!!
   def main(args: Array[String]): Unit = {
     val pi:Double = 3.1415926;
-    println(f"Pi is approximately ${pi}%9.5f")
+    Console println f"Pi is approximately ${pi}%9.5f"
     println(s"Day is ${Date.dayName(3)}")
     val today = new Date(11, 10, 2018)
     println(s"day is ${today.day}")
@@ -67,5 +80,15 @@ object TryDate {
     println(s"is this a leap year ${Date.isLeapYear}")
 
     println(s"Day of jan 1 2000 was ${new Date(1, 1, 2000).dayName}")
+
+    val d1 = new Date(1, 1, 2000)
+    val d2 = new Date(1, 1, 2000)
+    val d3 = new Date(1, 1)
+    val d4 = d1
+    println(s"d1 == d2 ${d1 == d2}")
+    println(s"d1 == d3 ${d1 == d3}")
+    println(s"d1 == d3 ${d1 == d3}")
+    println(s"d1 eq d4 ${d1.eq(d4)}")
+    println(s"d1 eq d2 ${d1 eq d3}")
   }
 }
