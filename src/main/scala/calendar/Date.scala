@@ -1,6 +1,11 @@
 package calendar
 
 object Date {
+  def *=+-(day:Int): String = dayName(day)
+
+  def isLeapYear(implicit year:Int):Boolean =
+    (year % 4 == 0) && ((year % 100 != 0) || (year % 400 == 0))
+
   def dayName(day: Int): String = day match {
     case 0 => "Saturday"
     case 1 => "Sunday"
@@ -25,17 +30,42 @@ object Date {
   //    else "BAD"
 }
 
+// constructor args can be simple args, val, or var
+class Date(val day:Int=1, val month:Int=1, val year:Int=2018) {
+  def dayOfWeek: Int = {
+//    val m = if (month < 3) month + 12 else month
+//    val y = if (month < 3) year - 1 else year
+
+//    val t:(Int, Int) = if (month < 3) (month + 12, year - 1) else (month, year)
+//    val m = t._1
+//    val y = t._2
+
+    val (m, y) = if (month < 3) (month + 12, year - 1) else (month, year)
+//    val (m, y):(Int, Int) = if (month < 3) (month + 12, year - 1) else (month, year)
+//    val (m, y):Tuple2[Int, Int] = if (month < 3) (month + 12, year - 1) else (month, year)
+    (day + (13 * (m + 1) / 5) + y + y / 4 - y / 100 + y / 400) %7
+  }
+  def dayName:String =
+    Date.dayName(dayOfWeek)
+
+  override def toString: String = s"day: $day, month: $month, year: $year"
+}
+
 object TryDate {
+  // function args are VAL always!!!
   def main(args: Array[String]): Unit = {
     val pi:Double = 3.1415926;
     println(f"Pi is approximately ${pi}%9.5f")
     println(s"Day is ${Date.dayName(3)}")
-    val n = 3
-//    val v = if (n == 3) {
-//      println("It's three!")
-//      3
-//    }
+    val today = new Date(11, 10, 2018)
+    println(s"day is ${today.day}")
+    val d = new Date(month=3, day=14)
+    println(s"default day ${d}")
 
-    println(s"day number ${Date.dayName(9)}")
+    // caller side, scoped, default argument!!!
+    implicit val thisYear = 2020
+    println(s"is this a leap year ${Date.isLeapYear}")
+
+    println(s"Day of jan 1 2000 was ${new Date(1, 1, 2000).dayName}")
   }
 }
